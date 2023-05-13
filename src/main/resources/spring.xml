@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+ http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+ http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-4.3.xsd
+">
+    <context:component-scan base-package="com.techsonnet"></context:component-scan>
+
+    <!-- 为委托对象⾃动⽣成代理对象 -->
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+
+    <!--    通过有参构造获得实例对象-->
+    <bean id="student" class="com.techsonnet.entity.Student">
+        <constructor-arg name="id" value="1"></constructor-arg>
+        <constructor-arg name="name" value="lisi"></constructor-arg>
+        <constructor-arg name="age" value="13"></constructor-arg>
+        <constructor-arg name="address">
+            <list>
+                <ref bean="address1"></ref>
+                <ref bean="address2"></ref>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="student2" class="com.techsonnet.entity.Student" parent="student"></bean>
+
+    <bean id="address1" class="com.techsonnet.entity.Address">
+        <property name="id" value="1"></property>
+        <property name="name" value="大同路"></property>
+    </bean>
+    <bean id="address2" class="com.techsonnet.entity.Address">
+        <property name="id" value="2"></property>
+        <property name="name" value="木兰大道"></property>
+    </bean>
+
+    <bean id="user" class="com.techsonnet.entity.User" p:id="1" p:name="wangwu" p:age="32"
+          p:address-ref="address2"></bean>
+
+    <context:property-placeholder location="jdbc. properties"></context:property-placeholder>
+    <bean id="dataSource" class="com.techsonnet.entity.DataSource">
+        <property name="userName" value="${user}"></property>
+        <property name="password" value="${password}"></property>
+        <property name="url" value="${url}"></property>
+        <property name="driverName" value="${driverName}"></property>
+    </bean>
+
+    <!--配置静态工厂-->
+    <bean id="car1" class="com.techsonnet.factory.StaticCarFactory" factory-method="getCar">
+        <constructor-arg value="1"></constructor-arg>
+    </bean>
+
+    <!--配置实例工厂-->
+    <bean id="instanceCarFactory" class="com.techsonnet.factory.InstanceCarFactory"></bean>
+    <!--由实例工厂生产 bean-->
+    <bean id="car2" factory-bean="instanceCarFactory" factory-method="getCar">
+        <constructor-arg value="2"></constructor-arg>
+    </bean>
+
+    <bean id="person1" class="com.techsonnet.entity.Person" autowire="byName">
+        <property name="id" value="1"></property>
+        <property name="name" value="lisi"></property>
+    </bean>
+
+    <bean id="car" class="com.techsonnet.entity.Car">
+        <property name="id" value="3"></property>
+        <property name="brand" value="dazhong"></property>
+    </bean>
+
+
+</beans>
